@@ -9,8 +9,7 @@ turnpassedtimes="${3:-0}" ;
 
 
 
-################# ################# #################
-
+#################
 
 
 
@@ -61,6 +60,8 @@ exec bash "$0" "$file" "$kafka_message_timestamp_type" "$((1+turnpassedtimes))" 
 
 ### file 需要的内容格式是譬如这样得到的：
 
+
+
 ## 创建topic最好是这样的配置：
 
 function topic_ctreate_demo ()
@@ -78,6 +79,8 @@ function topic_ctreate_demo ()
 ### 分区要一个(必须)
 ### 副本按需
 ### 时间戳种类按需
+
+
 
 ## 消费：
 
@@ -97,6 +100,23 @@ kafka_consumer_ts ()
 
 ### 关键是 --property print.timestamp=true
 ### awk 里是把前24小时给取了 也可以根据自己的需要把对应位置换成一天起止时间。
+
+
+
+## 使用：
+
+### 假设:
+###   本脚本文件名为: kr.sh 
+###   导出的消息文件名: ktsmsg.log
+### 
+### 预览:
+###   一般预览: bash kr.sh ktsmsg.log
+###   或者这样预览: bash kr.sh ktsmsg.log >/dev/null
+###   或者这样预览: bash kr.sh ktsmsg.log | awk '{printf$0" > "}'
+### 模拟:
+###   bash kr.sh ktsmsg.log |
+###       $KAFKA_HOME/bin/kafka-console-producer.sh --topic (topic-name) --broker-list xxx:9092
+### 
 
 
 
