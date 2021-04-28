@@ -43,7 +43,7 @@ awk '!/\\N/' "$file" |
             echo "$thatdaycurrent_x" | awk '{ print $3 }' ;
 
             echo "$thatdaycurrent_x" |
-                awk '{ printf "'"$turnpassedtimes"':"$1","strftime("[%T],senddone!",$2/1000)" " }' >&2 ;
+                awk '{ printf "'"$turnpassedtimes"':"$1","strftime("[%T%z],senddone!",$2/1000,"")" " }' >&2 ;
         } ;
     done ;
 
@@ -56,6 +56,8 @@ exec bash "$0" "$file" "$kafka_message_timestamp_type" "$((1+turnpassedtimes))" 
 #######################################################################################################################
 
 
+### 从Kafka消费得到带时间戳的消息，写入文本。
+### 该脚本则能按照时间戳，近似地按照当天实际的生产频率，模拟一个生产者。这里的循环周期就是天。
 
 
 ### file 需要的内容格式是譬如这样得到的：
