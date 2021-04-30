@@ -117,9 +117,11 @@ kafka_consumer_ts ()
 ###   或者这样预览: bash kr.sh ktsmsg.log | awk '{printf$0" > "}'
 ### 模拟:
 ###   bash kr.sh ktsmsg.log |
-###       $KAFKA_HOME/bin/kafka-console-producer.sh --topic (topic-name) --broker-list xxx:9092
+###       $KAFKA_HOME/bin/kafka-console-producer.sh --topic (topic-name) --broker-list xxx.xxx:9092
 ### 
-
+### 消费预览:
+###   $KAFKA_HOME/bin/kafka-console-consumer.sh --topic (topic-name) --bootstrap-server xxx.xxx:9092
+### 
 
 
 
@@ -138,4 +140,4 @@ kafka_consumer_ts ()
 
 
 
-#######################################################################################################################
+###
