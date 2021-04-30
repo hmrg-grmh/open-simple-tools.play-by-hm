@@ -43,7 +43,7 @@ awk '!/\\N/' "$file" |
             echo "$thatdaycurrent_x" | awk '{ print $3 }' ;
 
             echo "$thatdaycurrent_x" |
-                awk '{ printf "send,'"$turnpassedtimes"':"$1","strftime("[%T%z]",$2/1000,"")",done " }' >&2 ;
+                awk '{ printf " ""send,'"$turnpassedtimes"':"$1","strftime("[%T%z]",$2/1000,"")",done"" " }' >&2 ;
         } ;
     done ;
 
