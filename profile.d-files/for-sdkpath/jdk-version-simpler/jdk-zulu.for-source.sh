@@ -21,13 +21,21 @@ java -version ;
 
 
 ######### usage #########
-# export JAVA_VER=8
-# . /etc/profile
-######### or #########
-# export JAVA_VER=11
-# . /etc/profile
 
-### to change ver of jdk in use .
+# just add file to 
+# /etc/profile.d dir
+# then run:
+##[...]$ source /etc/profile
+
+# to change ver of jdk in use:
+##[...]$ export JAVA_VER=8
+##[...]$ . /etc/profile
+
+# or:
+##[...]$ export JAVA_VER=11
+##[...]$ . /etc/profile
+
+##########################
 
 ### well ...
 ### if your path broken because of this file
