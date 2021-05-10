@@ -43,3 +43,11 @@ java -version ;
 ### if your path broken because of this file
 ### just delete it by /bin/rm
 ### then exit and relogin .
+
+##########################
+
+# the point of this tool is:
+# - `function javahome_by_ver () { javahome_ver_${1:-8} ; }`
+# - `PATH="$(echo $PATH | tr : '\n' | awk 'BEGIN{ORS=":"}!/'${JAVA_HOME_NOVER//\//\\\/}'/{print}END{printf"'$HOME'/bin"}')"`
+# - and the `&&` end-symbol
+
