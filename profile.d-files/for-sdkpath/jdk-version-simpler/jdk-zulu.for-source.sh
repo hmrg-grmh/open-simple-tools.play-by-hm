@@ -9,14 +9,14 @@ function javahome_by_ver () { javahome_ver_${1:-8} ; } &&
 JAVA_VER_SET=${JAVA_VER:-11} &&
 
 JAVA_HOME=$(javahome_by_ver $JAVA_VER_SET) &&
-echo JAVA_VER_SET:$JAVA_VER_SET &&
-echo JAVA_HOME:$JAVA_HOME &&
+echo JAVA_VER_SET:$JAVA_VER_SET >&2 &&
+echo JAVA_HOME:$JAVA_HOME >&2 &&
 PATH="$(echo $PATH | tr : '\n' | awk 'BEGIN{ORS=":"}!/'${JAVA_HOME_NOVER//\//\\\/}'/{print}END{printf"'$HOME'/bin"}')" &&
 
 export JAVA_HOME &&
 export PATH=$PATH:$JAVA_HOME/bin &&
 
-java -version ;
+java -version >&2 ;
 
 
 
@@ -50,4 +50,5 @@ java -version ;
 # - `function javahome_by_ver () { javahome_ver_${1:-8} ; }`
 # - `PATH="$(echo $PATH | tr : '\n' | awk 'BEGIN{ORS=":"}!/'${JAVA_HOME_NOVER//\//\\\/}'/{print}END{printf"'$HOME'/bin"}')"`
 # - and the `&&` end-symbol
+# - and the `>&2` for donot trouble the stdout .
 
