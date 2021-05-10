@@ -28,3 +28,8 @@ java -version ;
 # . /etc/profile
 
 ### to change ver of jdk in use .
+
+### well ...
+### if your path broken because of this file
+### just delete it by /bin/rm
+### then exit and relogin .
