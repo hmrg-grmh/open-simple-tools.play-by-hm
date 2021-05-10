@@ -26,6 +26,8 @@ java -version ;
 # /etc/profile.d dir
 # then run:
 ##[...]$ source /etc/profile
+# or send to other:
+##[...]$ (cd /etc/profile.d && rsync -avz jdk-zulu.for-source.sh root@node-oth:$PWD)
 
 # to change ver of jdk in use:
 ##[...]$ export JAVA_VER=8
