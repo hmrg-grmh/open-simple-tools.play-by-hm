@@ -1,4 +1,4 @@
-! /usr/bin/awk -f
+#! /usr/bin/awk -f
 
 
 ## usage-try:
@@ -141,11 +141,15 @@ END{
         } ;
     } ;
     
+    
     for (ip in ip_firstlinenum)
     {
         nr_ip[ip_firstlinenum[ip]] = ip ;
     } ;
-    for (nr in nr_ip) { print nr_ip[nr],ip_namesortedsetseq[nr_ip[nr]] ; } ;
+    for (nr in nr_ip)
+    {
+        print nr_ip[nr],ip_namesortedsetseq[nr_ip[nr]] ;
+    } ;
 }
 
 ## oneline-shell:
