@@ -156,7 +156,61 @@ END{
 ## awk '{for(i=2;i<=NF;i++){ordinalof_hostname++;ip_name_ordinalseqseq[$1][$i]=ip_name_ordinalseqseq[$1][$i]==""?ordinalof_hostname:(ordinalof_hostname<ip_name_ordinalseqseq[$1][$i]?ordinalof_hostname:ip_name_ordinalseqseq[$1][$i])};ip_firstlinenum[$1]=ip_firstlinenum[$1]==""?NR:(NR<ip_firstlinenum[$1]?NR:ip_firstlinenum[$1])}END{PROCINFO["sorted_in"]="@ind_num_asc";for(ip in ip_name_ordinalseqseq){for(name in ip_name_ordinalseqseq[ip]){ip_ord_namesetseq[ip][ip_name_ordinalseqseq[ip][name]]=name};for(ord in ip_ord_namesetseq[ip]){ip_namesortedsetseq[ip]=ip_namesortedsetseq[ip]" "ip_ord_namesetseq[ip][ord]}};for(ip in ip_firstlinenum){nr_ip[ip_firstlinenum[ip]]=ip};for(nr in nr_ip){print nr_ip[nr],ip_namesortedsetseq[nr_ip[nr]]}}' /etc/hosts
 
 ## sh-fn:
-## hosts_tidier () { awk '{for(i=2;i<=NF;i++){ordinalof_hostname++;ip_name_ordinalseqseq[$1][$i]=ip_name_ordinalseqseq[$1][$i]==""?ordinalof_hostname:(ordinalof_hostname<ip_name_ordinalseqseq[$1][$i]?ordinalof_hostname:ip_name_ordinalseqseq[$1][$i])};ip_firstlinenum[$1]=ip_firstlinenum[$1]==""?NR:(NR<ip_firstlinenum[$1]?NR:ip_firstlinenum[$1])}END{PROCINFO["sorted_in"]="@ind_num_asc";for(ip in ip_name_ordinalseqseq){for(name in ip_name_ordinalseqseq[ip]){ip_ord_namesetseq[ip][ip_name_ordinalseqseq[ip][name]]=name};for(ord in ip_ord_namesetseq[ip]){ip_namesortedsetseq[ip]=ip_namesortedsetseq[ip]" "ip_ord_namesetseq[ip][ord]}};for(ip in ip_firstlinenum){nr_ip[ip_firstlinenum[ip]]=ip};for(nr in nr_ip){print nr_ip[nr],ip_namesortedsetseq[nr_ip[nr]]}}' "${1:-/dev/stdin}" ; } && hosts_tidy_uppn () { hosts_tidier /etc/hosts > /etc/.hosts.tidy-uppn"${1:-}" ; ls -a /etc/hosts /etc/.hosts* ; } && q_hosts_tidier () { mv /etc/hosts /etc/hosts.bak && hosts_tidier /etc/hosts.bak >> /etc/hosts && mv /etc/hosts.bak /etc/hosts.bak"`date +%s%3N`" ; } ;
+## hosts_tidier () { awk '{for(i=2;i<=NF;i++){ordinalof_hostname++;ip_name_ordinalseqseq[$1][$i]=ip_name_ordinalseqseq[$1][$i]==""?ordinalof_hostname:(ordinalof_hostname<ip_name_ordinalseqseq[$1][$i]?ordinalof_hostname:ip_name_ordinalseqseq[$1][$i])};ip_firstlinenum[$1]=ip_firstlinenum[$1]==""?NR:(NR<ip_firstlinenum[$1]?NR:ip_firstlinenum[$1])}END{PROCINFO["sorted_in"]="@ind_num_asc";for(ip in ip_name_ordinalseqseq){for(name in ip_name_ordinalseqseq[ip]){ip_ord_namesetseq[ip][ip_name_ordinalseqseq[ip][name]]=name};for(ord in ip_ord_namesetseq[ip]){ip_namesortedsetseq[ip]=ip_namesortedsetseq[ip]" "ip_ord_namesetseq[ip][ord]}};for(ip in ip_firstlinenum){nr_ip[ip_firstlinenum[ip]]=ip};for(nr in nr_ip){print nr_ip[nr],ip_namesortedsetseq[nr_ip[nr]]}}' "${1:-/dev/stdin}" ; } && hosts_tidy_uppn () { hosts_tidier /etc/hosts > /etc/.hosts.tidy-uppn"${1:-}" ; ls -a /etc/hosts /etc/.hosts* ; } && q_hosts_tidier () { cp -p /etc/hosts /etc/hosts.bak && hosts_tidier /etc/hosts.bak > /etc/hosts && mv /etc/hosts.bak /etc/hosts.bak"`date +%s%3N`" ; } ;
+
+## usage-example.resign:
+## echo 'hosts_tidier () { awk '"'"'{for(i=2;i<=NF;i++){ordinalof_hostname++;ip_name_ordinalseqseq[$1][$i]=ip_name_ordinalseqseq[$1][$i]==""?ordinalof_hostname:(ordinalof_hostname<ip_name_ordinalseqseq[$1][$i]?ordinalof_hostname:ip_name_ordinalseqseq[$1][$i])};ip_firstlinenum[$1]=ip_firstlinenum[$1]==""?NR:(NR<ip_firstlinenum[$1]?NR:ip_firstlinenum[$1])}END{PROCINFO["sorted_in"]="@ind_num_asc";for(ip in ip_name_ordinalseqseq){for(name in ip_name_ordinalseqseq[ip]){ip_ord_namesetseq[ip][ip_name_ordinalseqseq[ip][name]]=name};for(ord in ip_ord_namesetseq[ip]){ip_namesortedsetseq[ip]=ip_namesortedsetseq[ip]" "ip_ord_namesetseq[ip][ord]}};for(ip in ip_firstlinenum){nr_ip[ip_firstlinenum[ip]]=ip};for(nr in nr_ip){print nr_ip[nr],ip_namesortedsetseq[nr_ip[nr]]}}'"'"' "${1:-/dev/stdin}" ; } && hosts_tidy_uppn () { hosts_tidier /etc/hosts > /etc/.hosts.tidy-uppn"${1:-}" && ls -a /etc/hosts /etc/.hosts* ; } && q_hosts_tidier () { cp -p /etc/hosts /etc/hosts.bak && hosts_tidier /etc/hosts.bak > /etc/hosts && mv /etc/hosts.bak /etc/hosts.bak"`date +%s%3N`" ; } ;' > /etc/profile.d/host_tidier.fn.sh ;
+## means-as:
+# echo '
+# hosts_tidier ()
+# {
+#     awk '"'"'
+#     {
+#         for (i=2; i<=NF; i++)
+#         {
+#             ordinalof_hostname += 1 ;
+#             ip_name_ordinalseqseq[$1][$i] = ip_name_ordinalseqseq[$1][$i] == "" ? ordinalof_hostname : ( ordinalof_hostname < ip_name_ordinalseqseq[$1][$i] ? ordinalof_hostname : ip_name_ordinalseqseq[$1][$i] ) ;
+#         } ;
+#         
+#         ip_firstlinenum[$1] = ip_firstlinenum[$1] == "" ? NR : ( NR < ip_firstlinenum[$1] ? NR : ip_firstlinenum[$1] ) ;
+#     }
+#     END{
+#         PROCINFO["sorted_in"] = "@ind_num_asc" ;
+#         
+#         for (ip in ip_name_ordinalseqseq)
+#         {
+#             for (name in ip_name_ordinalseqseq[ip])
+#             {
+#                 ip_ord_namesetseq[ip][ip_name_ordinalseqseq[ip][name]] = name ;
+#             } ;
+#             for (ord in ip_ord_namesetseq[ip])
+#             {
+#                 ip_namesortedsetseq[ip] = ip_namesortedsetseq[ip]" "ip_ord_namesetseq[ip][ord] ;
+#             } ;
+#         } ;
+#         
+#         
+#         for (ip in ip_firstlinenum)
+#         {
+#             nr_ip[ip_firstlinenum[ip]] = ip ;
+#         } ;
+#         for (nr in nr_ip)
+#         {
+#             print nr_ip[nr],ip_namesortedsetseq[nr_ip[nr]] ;
+#         } ;
+#     }'"'"' "${1:-/dev/stdin}" ;
+# } &&
+# hosts_tidy_uppn ()
+# {
+#     hosts_tidier /etc/hosts > /etc/.hosts.tidy-uppn"${1:-}" &&
+#     ls -a /etc/hosts /etc/.hosts* ;
+# } &&
+# q_hosts_tidier ()
+# {
+#     cp -p /etc/hosts /etc/hosts.bak &&
+#     hosts_tidier /etc/hosts.bak > /etc/hosts &&
+#     mv /etc/hosts.bak /etc/hosts.bak"`date +%s%3N`" ;
+# } ;' > /etc/profile.d/host_tidier.fn.sh ;
 
 
 
