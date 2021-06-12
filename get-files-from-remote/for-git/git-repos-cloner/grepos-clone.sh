@@ -62,17 +62,19 @@ gits_clone ()
         tee -a /dev/stderr |
         xargs -i -P0 -- sh -c "$(
         echo '
+        'logpath_pre'=''"$PWD"'"'"/'{}'/.running-log"'" '&&' '
+        
         cd' "'"'{}'"'" '||' '
         {' '
-            /usr/bin/env git' clone `#-q` --depth $partdepth -- "'""$GIT_REPO_PRE_URL"/'{}'.git"'" "'"'{}'"'" '&>' ."'"'{}'"'".running-clone0.log '&&' '
+            /usr/bin/env git' clone `#-q` --depth $partdepth -- "'""$GIT_REPO_PRE_URL"/'{}'.git"'" "'"'{}'"'" '&>' '"''$'logpath_pre'"'.clone '&&' '
             cd' "'"'{}'"'" ';' '
         }' '&&' '
         /usr/bin/env seq' -- $partdepth $partdepth $maxdepth '|' '
             while' read dep ';' '
             do' '
                 /usr/bin/env git' fetch `#-q` --depth='$dep' ';' '
-            done' '&>' ."'"'{}'"'".running-fetch.log '&&' '
-        /usr/bin/env git' pull `#-q` --all '&>' ."'"'{}'"'".running-pull.log '&&' '
+            done' '&>' '"''$'logpath_pre'"'.fetches '&&' '
+        /usr/bin/env git' pull `#-q` --all '&>' '"''$'logpath_pre'"'.pull '&&' '
         
         echo' ::::"'"'>>>>'"'" '>&2' '&&' '
         echo' :ok, "'"'{}'"'" '||' '
