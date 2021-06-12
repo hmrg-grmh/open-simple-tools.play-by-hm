@@ -19,8 +19,8 @@ repo_choose ()
 
 doc ()
 {
-    echo :fromnet, '"'https://stackoverflow.com/questions/21277806/fatal-early-eof-fatal-index-pack-failed'"' &&
-    echo :author, '"'hmrg-grmh'"' ;
+    echo    :ideafromnet,   '"'https://stackoverflow.com/questions/21277806/fatal-early-eof-fatal-index-pack-failed'"' &&
+    echo    :author,        '"'hmrg-grmh'"' ;
 } &&
 
 
@@ -102,4 +102,5 @@ configs_run () `# may be you need this ...`
     gcf_add     core.compression            -1 ;
     
 } &&
+
 
