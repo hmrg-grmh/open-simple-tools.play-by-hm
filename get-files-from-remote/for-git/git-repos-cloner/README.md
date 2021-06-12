@@ -62,38 +62,42 @@ gits_clone ()
     
     [[ $fromfile == /dev/stdin ]] || [[ -f "$fromfile" ]] || { echo nofile "$fromfile" >&2 ; exit 2 ; } ;
     
-    echo 'cloning list:' &&
+    echo 'input cloning list:' &&
     cat "$fromfile" |
         tee -a /dev/stderr |
         xargs -i -P0 -- sh -c "$(
         echo '
-        'logpath_pre'=''"$PWD"'"'"/'{}'/.running-log"'" '&&' '
+        'logpath_pre'=''"$PWD"'"'"/'{}'.running.log"'" '&&' '
+        mkdir' -p '"`' dirname "'"'{}'"'" '`"' '&&' '
         
-        cd' "'"'{}'"'" '||' '
+        cd' "'"'{}'"'" '2>/dev/null' '||' '
         {' '
-            /usr/bin/env git' clone `#-q` --depth $partdepth -- "'""$GIT_REPO_PRE_URL"/'{}'.git"'" "'"'{}'"'" '&>' '"''$'logpath_pre'"'.clone '&&' '
+            echo' :msg, :first-clone, :repo :: "'"'{}'"'" '>&2' '&&' '
+            /usr/bin/env git' clone `#-q` --depth $partdepth -- "'""$GIT_REPO_PRE_URL"/'{}'.git"'" "'"'{}'"'" '&>' '"''$'logpath_pre'"' '&&' '
             cd' "'"'{}'"'" ';' '
         }' '&&' '
         /usr/bin/env seq' -- $partdepth $partdepth $maxdepth '|' '
             while' read dep ';' '
             do' '
-                /usr/bin/env git' fetch `#-q` --depth='$dep' ';' '
-            done' '&>' '"''$'logpath_pre'"'.fetches '&&' '
-        /usr/bin/env git' pull `#-q` --all '&>' '"''$'logpath_pre'"'.pull '&&' '
+                /usr/bin/env git' fetch `#-q` --depth='$dep' '&>>' '"''$'logpath_pre'"' '||' '
+                {' echo :err, :fetch-err :: depth:'$dep', :repo :: "'"'{}'"'" ';' exit 2 ';' '}' ';' '
+            done' '&&' '
+        /usr/bin/env git' pull `#-q` --all '&>>' '"''$'logpath_pre'"' '&&' '
         
-        echo' ::::"'"'>>>>'"'" '>&2' '&&' '
-        echo' :ok, "'"'{}'"'" '||' '
-        echo' :err, "'"'{}'"'" ';' )" ;
+        echo' :ok, :repo :: "'"'{}'"'" '||' '
+        echo' :err, :repo :: "'"'{}'"'" ';' )" ;
 } && 
 
 doc `#>&2` >&2 &&
 echo &&
-gits_clone "$@" ;
+gits_clone "$@" ; exit $? ;
 
 
 
 
-configs_run () `# may be you need this ...`
+
+
+configs_run () 
 {
     gcf_add ()
     { /usr/bin/env git config --add $@ ; } &&
@@ -108,8 +112,7 @@ configs_run () `# may be you need this ...`
     gcf_add     pack.windowMemory           4095m &&
     gcf_add     core.compression            -1 ;
     
-} &&
-
+} ; `# may be you need this ...`
 
 
 ```
@@ -130,4 +133,6 @@ mthom/scryer-prolog' | grepos-clone.sh
 
 这个脚本目前无法处理文件夹已经建好但 `.git` 损坏或没有的情况。  
 这时候请自行删除对应的目录。删一层总之确保对它 `cd` 会出错就行。
+
+在 msys2 里尝试的情况有点惨不忍睹，直接 `^C` 会让那个 `sh` 进程成为孤👶。
 
