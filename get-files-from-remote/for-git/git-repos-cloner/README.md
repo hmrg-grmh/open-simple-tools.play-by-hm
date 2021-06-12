@@ -1,4 +1,4 @@
-这个用来批量下载 github (或别处(还没测)) 的代码。
+这个用来批量下载 github (或别处(别处还没测)) 的代码。
 
 [`grepos-clone.sh`](./grepos-clone.sh):
 
@@ -67,17 +67,19 @@ gits_clone ()
         tee -a /dev/stderr |
         xargs -i -P0 -- sh -c "$(
         echo '
+        'logpath_pre'=''"$PWD"'"'"/'{}'/.running-log"'" '&&' '
+        
         cd' "'"'{}'"'" '||' '
         {' '
-            /usr/bin/env git' clone `#-q` --depth $partdepth -- "'""$GIT_REPO_PRE_URL"/'{}'.git"'" "'"'{}'"'" '&>' ."'"'{}'"'".running-clone0.log '&&' '
+            /usr/bin/env git' clone `#-q` --depth $partdepth -- "'""$GIT_REPO_PRE_URL"/'{}'.git"'" "'"'{}'"'" '&>' '"''$'logpath_pre'"'.clone '&&' '
             cd' "'"'{}'"'" ';' '
         }' '&&' '
         /usr/bin/env seq' -- $partdepth $partdepth $maxdepth '|' '
             while' read dep ';' '
             do' '
                 /usr/bin/env git' fetch `#-q` --depth='$dep' ';' '
-            done' '&>' ."'"'{}'"'".running-fetch.log '&&' '
-        /usr/bin/env git' pull `#-q` --all '&>' ."'"'{}'"'".running-pull.log '&&' '
+            done' '&>' '"''$'logpath_pre'"'.fetches '&&' '
+        /usr/bin/env git' pull `#-q` --all '&>' '"''$'logpath_pre'"'.pull '&&' '
         
         echo' ::::"'"'>>>>'"'" '>&2' '&&' '
         echo' :ok, "'"'{}'"'" '||' '
@@ -109,6 +111,7 @@ configs_run () `# may be you need this ...`
 } &&
 
 
+
 ```
 
 simple usage:
@@ -118,6 +121,13 @@ echo '
 cisco/ChezScheme
 tsasioglu/Total-Uninstaller
 elixir-lang/ex_doc
-nilaoda/BBDown' | grepos-clone.sh
+nilaoda/BBDown
+StepfenShawn/Cantonese
+triska/the-power-of-prolog
+hashicorp/vagrant
+mthom/scryer-prolog' | grepos-clone.sh
 ```
+
+这个脚本目前无法处理文件夹已经建好但 `.git` 损坏或没有的情况。  
+这时候请自行删除对应的目录。删一层总之确保对它 `cd` 会出错就行。
 
