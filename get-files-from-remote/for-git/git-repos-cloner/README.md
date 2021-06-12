@@ -1,6 +1,6 @@
 这个用来批量下载 github (或别处(还没测)) 的代码。
 
-[`grepos-clone.sh`](https://github.com/hmrg-grmh/play-simple-tools/blob/main/get-files-from-remote/for-git/git-repos-cloner/grepos-clone.sh):
+[`grepos-clone.sh`](./grepos-clone.sh):
 
 ```bash
 #! /bin/bash
@@ -24,8 +24,8 @@ repo_choose ()
 
 doc ()
 {
-    echo :fromnet, '"'https://stackoverflow.com/questions/21277806/fatal-early-eof-fatal-index-pack-failed'"' &&
-    echo :author, '"'hmrg-grmh'"' ;
+    echo    :ideafromnet,   '"'https://stackoverflow.com/questions/21277806/fatal-early-eof-fatal-index-pack-failed'"' &&
+    echo    :author,        '"'hmrg-grmh'"' ;
 } &&
 
 
