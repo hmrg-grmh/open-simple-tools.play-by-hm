@@ -40,7 +40,7 @@ gits_clone ()
     do
         case $1 in
         
-            -k|--see-parser) kritik="${2:-echo}" && shift 2 ;;
+            -k|--parser-itself) kritik="${2:-echo}" && shift 2 ;;
             -f|--from-file) fromfile="$2" && shift 2 ;;
             -d|--max-depth) maxdepth=$2 && shift 2 ;;
             -p|--part-depth) partdepth=$2 && shift 2 ;;
@@ -116,7 +116,6 @@ configs_run ()
     gcf_add     core.compression            -1 ;
     
 } ; `# may be you need this ...`
-
 
 
 ```
