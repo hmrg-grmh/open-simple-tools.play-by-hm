@@ -4,12 +4,12 @@ repo_choose ()
 {
     case $1 in
     
-        ghproxy)            echo https://ghproxy.com/https://github.com/ ;;
-        mirror.ghproxy)     echo https://mirror.ghproxy.com/https://github.com/ ;;
-        github)             echo https://github.com/ ;;
-        gitclone)           echo https://gitclone.com/github.com/ ;;
-        cnpmjs)             echo https://github.com.cnpmjs.org/ ;;
-        fastgit)            echo https://hub.fastgit.org/ ;;
+        github)             echo https://github.com ;;
+        ghproxy)            echo https://ghproxy.com/https://github.com ;;
+        mirror.ghproxy)     echo https://mirror.ghproxy.com/https://github.com ;;
+        gitclone)           echo https://gitclone.com/github.com ;;
+        cnpmjs)             echo https://github.com.cnpmjs.org ;;
+        fastgit)            echo https://hub.fastgit.org ;;
         
         *) echo WARN: err repo key >&2 `#; return 2` ;;
         
@@ -48,36 +48,37 @@ gits_clone ()
     fromfile="${fromfile:-/dev/stdin}" &&
     maxdepth=${maxdepth:-1024} &&
     partdepth=${partdepth:-2} &&
-    GIT_REPO=${GIT_REPO:-cnpmjs} &&
+    GIT_REPO=${GIT_REPO:-github} &&
     
     echo :in, "$fromfile", $maxdepth, $partdepth, $GIT_REPO &&
     
     repo_url_pre="$(repo_choose $GIT_REPO)" &&
-    GIT_REPO_PRE_URL="${repo_url_pre:-${GIT_REPO_PRE_URL:-https://github.com/}}" &&
+    GIT_REPO_PRE_URL="${repo_url_pre:-${GIT_REPO_PRE_URL:-git://github.com}}" &&
     
     [[ $fromfile == /dev/stdin ]] || [[ -f "$fromfile" ]] || { echo nofile "$fromfile" >&2 ; exit 2 ; } ;
     
     echo 'input cloning list:' &&
     cat "$fromfile" |
         tee -a /dev/stderr |
-        xargs -i -P0 -- sh -c "$(
+        xargs -i -P0 -- echo "$(
         echo '
         'logpath_pre'=''"$PWD"'"'"/'{}'.running.log"'" '&&' '
         mkdir' -p '"`' dirname "'"'{}'"'" '`"' '&&' '
         
+        'repo_url'='"'""$GIT_REPO_PRE_URL"/'{}'.git"'" '&&' '
         cd' "'"'{}'"'" '2>/dev/null' '||' '
         {' '
             echo' :msg, :first-clone, :repo :: "'"'{}'"'" '>&2' '&&' '
-            /usr/bin/env git' clone `#-q` --depth $partdepth -- "'""$GIT_REPO_PRE_URL"/'{}'.git"'" "'"'{}'"'" '&>' '"''$'logpath_pre'"' '&&' '
+            /usr/bin/env git' clone `#-q` --depth $partdepth --  '"$'repo_url'"'   "'"'{}'"'"   '&>'   '"$'logpath_pre'"'   '&&'  '
             cd' "'"'{}'"'" ';' '
         }' '&&' '
         /usr/bin/env seq' -- $partdepth $partdepth $maxdepth '|' '
             while' read dep ';' '
             do' '
-                /usr/bin/env git' fetch `#-q` --depth='$dep' '&>>' '"''$'logpath_pre'"' '||' '
-                {' echo :err, :fetch-err :: depth:'$dep', :repo :: "'"'{}'"'" ';' exit 2 ';' '}' ';' '
+                /usr/bin/env git' fetch `#-q` --depth='$dep'   '"$'repo_url'"'    '&>>'  '"$'logpath_pre'"'   '||'  '
+                {' echo :msg, :fetch-err :: depth:'$dep', :repo :: "'"'{}'"'" '>&2' ';' exit 2 ';' '}' ';' '
             done' '&&' '
-        /usr/bin/env git' pull `#-q` --all '&>>' '"''$'logpath_pre'"' '&&' '
+        /usr/bin/env git' pull `#-q` --all   '&>>'  '"$'logpath_pre'"'  '&&'  '
         
         echo' :ok, :repo :: "'"'{}'"'" '||' '
         echo' :err, :repo :: "'"'{}'"'" ';' )" ;
