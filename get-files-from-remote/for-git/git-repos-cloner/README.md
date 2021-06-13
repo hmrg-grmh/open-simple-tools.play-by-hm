@@ -75,13 +75,14 @@ gits_clone ()
         'repo_url'='"'""$GIT_REPO_PRE_URL"/'{}'.git"'" '&&' '
         cd' "'"'{}'"'" '2>/dev/null' '||' '
         {' '
-            echo' :msg, :first-clone, :repo :: "'"'{}'"'" '>&2' '&&' '
+            echo' :msg, :starting :: first-clone, :repo :: "'"'{}'"'" '>&2' '&&' '
             /usr/bin/env git' clone `#-q` --depth $partdepth --  '"$'repo_url'"'   "'"'{}'"'"   '&>'   '"$'logpath_pre'"'   '&&'  '
             cd' "'"'{}'"'" ';' '
         }' '&&' '
         /usr/bin/env seq' -- $partdepth $partdepth $maxdepth '|' '
             while' read dep ';' '
             do' '
+                echo' :msg, :starting :: fetch-'$dep', :repo :: "'"'{}'"'" '>&2' '&&' '
                 /usr/bin/env git' fetch `#-q` --depth='$dep'   '"$'repo_url'"'    '&>>'  '"$'logpath_pre'"'   '||'  '
                 {' echo :msg, :fetch-err :: depth:'$dep', :repo :: "'"'{}'"'" '>&2' ';' exit 2 ';' '}' ';' '
             done' '&&' '
@@ -116,6 +117,7 @@ configs_run ()
     gcf_add     core.compression            -1 ;
     
 } ; `# may be you need this ...`
+
 
 
 ```
