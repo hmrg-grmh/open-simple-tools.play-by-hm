@@ -36,26 +36,28 @@ gits_clone ()
     `#(cd .git) || { /usr/bin/env git init ; } ;`
     
     
-    while (($# != 0)) ;
+    while (($# != 0)) ; `# opts here`
     do
         case $1 in
         
+            -k|--see-parser) kritik="${2:-echo}" && shift 2 ;;
             -f|--from-file) fromfile="$2" && shift 2 ;;
             -d|--max-depth) maxdepth=$2 && shift 2 ;;
             -p|--part-depth) partdepth=$2 && shift 2 ;;
             -r|--repo-choode) GIT_REPO=$2 && shift 2 ;;
             
-            --|*) oth="$*" ; break ;;
+            --|*) oth="$*" && break ;;
             
         esac ;
     done &&
     
+    kritik="${kritik:-sh -c}" &&
     fromfile="${fromfile:-/dev/stdin}" &&
     maxdepth=${maxdepth:-1024} &&
     partdepth=${partdepth:-2} &&
     GIT_REPO=${GIT_REPO:-github} &&
     
-    echo :in, "$fromfile", $maxdepth, $partdepth, $GIT_REPO &&
+    echo :in, $kritik, "$fromfile", $maxdepth, $partdepth, $GIT_REPO &&
     
     repo_url_pre="$(repo_choose $GIT_REPO)" &&
     GIT_REPO_PRE_URL="${repo_url_pre:-${GIT_REPO_PRE_URL:-git://github.com}}" &&
@@ -65,7 +67,7 @@ gits_clone ()
     echo 'input cloning list:' &&
     cat "$fromfile" |
         tee -a /dev/stderr |
-        xargs -i -P0 -- echo "$(
+        xargs -i -P0 --  $kritik  "$(
         echo '
         'logpath_pre'=''"$PWD"'"'"/'{}'.running.log"'" '&&' '
         mkdir' -p '"`' dirname "'"'{}'"'" '`"' '&&' '
@@ -114,6 +116,7 @@ configs_run ()
     gcf_add     core.compression            -1 ;
     
 } ; `# may be you need this ...`
+
 
 
 ```
