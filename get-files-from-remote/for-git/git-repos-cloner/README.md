@@ -86,9 +86,9 @@ gits_clone ()
     
     {
         echo :in :: ;
-        echo k:: $kritik, f:: "$fromfile", d:: $maxdepth, ;
-        echo b:: $bgfetch, p:: $partdepth, c:: $clonedepth, ;
-        echo r:: $GIT_REPO ;
+        echo :k :: $kritik, :f :: "$fromfile", :d :: $maxdepth, ;
+        echo :b :: $bgfetch, :p :: $partdepth, :c :: $clonedepth, ;
+        echo :r :: $GIT_REPO ;
     } &&
     
     
@@ -171,6 +171,9 @@ gits_clone "$@" ; exit $? ;
 
 
 
+
+
+
 configs_run () 
 {
     gcf_add ()
@@ -219,5 +222,7 @@ mthom/scryer-prolog' | grepos-clone.sh
 
 当然了，这玩意现在用 simple usage 都很花我 CPU 了（没占满但温度不小），  
 所以在性能的节约高效利用上还有待优化。  
+
+> 实际在 Windows 的 Msys2 试了一下，正常运作还行，但如果结束进程树的话，就会出现一些十分刚烈的失控的现象，故建议轻易不要使用。。。。
 
 
