@@ -24,12 +24,13 @@ repo_lister ()
         echo https://github.com ;
         echo https://ghproxy.com/https://github.com ;
         echo https://mirror.ghproxy.com/https://github.com ;
-        echo https://gitclone.com/github.com ;
         echo https://github.com.cnpmjs.org ;
-        echo https://hub.fastgit.org ;
+        echo https://gitclone.com/github.com ;
+        `# echo https://hub.fastgit.org ;`
     } |
-        awk "${1:-//}"
-} ;
+        awk "${1:-//}" ;
+} &&
+export -f repo_lister &&
 
 
 
@@ -59,6 +60,7 @@ gits_clone ()
             -p|--part-depth) partdepth=$2 && shift 2 ;;
             
             -c|--clone-depth) clonedepth=$2 && shift 2 ;;
+            -a|--repo-awk) repolistawk="$2" && shift 2 ;;
             -r|--repo-choode) GIT_REPO=$2 && shift 2 ;;
             
             --|*) oth="$*" && break ;;
@@ -76,14 +78,15 @@ gits_clone ()
     partdepth=${partdepth:-2} &&
     
     clonedepth=${clonedepth:-$partdepth} &&
+    repolistawk="${repolistawk:-//}" &&
     GIT_REPO=${GIT_REPO:-github} &&
     
     
     {
-        echo :in :: ;
-        echo :k :: $kritik, :f :: "$fromfile", :d :: $maxdepth, ;
-        echo :b :: $bgfetch, :p :: $partdepth, :c :: $clonedepth, ;
-        echo :r :: $GIT_REPO ;
+        echo :opts :: ;
+        echo :k :: '"'$kritik'"', :f :: '"'"$fromfile"'"', ;
+        echo :d :: $maxdepth, :b :: $bgfetch, :p :: $partdepth, :c :: $clonedepth, ;
+        echo :r :: '"'$GIT_REPO'"', :a :: '"'"$repolistawk"'"' ;
     } &&
     
     
@@ -98,15 +101,7 @@ gits_clone ()
     {
         repo_iter ()
         {
-            {
-                echo https://github.com ;
-                echo https://ghproxy.com/https://github.com ;
-                echo https://mirror.ghproxy.com/https://github.com ;
-                echo https://gitclone.com/github.com ;
-                echo https://github.com.cnpmjs.org ;
-                echo https://hub.fastgit.org ;
-            } |
-                awk "${1:-//}" &&
+            repo_lister "${1:-//}" &&
             exec ${2:-sh -c} repo_iter' '"$1"' '"'$2'" ;
         } &&
         export -f repo_iter &&
@@ -132,7 +127,7 @@ gits_clone ()
     
     
     
-    echo 'input cloning list:' &&
+    echo :show, '"[input cloning list]"' &&
     cat "$fromfile" |
         tee -a /dev/stderr |
         xargs -i -P0 --  $kritik  "$(
@@ -151,7 +146,7 @@ gits_clone ()
             while' read dep ';' '
             do' '
                 echo' :msg, :starting :: fetch-'$dep', :repo :: "'"'{}'"'" '>&2' '&&' '
-                fetch_iter'  '$dep'   "'"'{}'"'"   "'$kritik'"  '|'  $(gtone $kritik)   '&>>'  '"$'logpath_pre'"'  '||'  '
+                fetch_iter'  '$dep'   "'"'{}'"'"   "'$kritik'"  "'$repolistawk'"  '|'  $(gtone $kritik)   '&>>'  '"$'logpath_pre'"'  '||'  '
                 {' echo :msg, :fetch-err :: depth:'$dep', :repo :: "'"'{}'"'" '>&2' ';' exit 2 ';' '}' ';' '
             done' '&&' '
         /usr/bin/env git' pull `#-q` --all   '&>>'  '"$'logpath_pre'"'  '&&'  '
